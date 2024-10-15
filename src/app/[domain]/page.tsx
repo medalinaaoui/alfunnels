@@ -1,11 +1,10 @@
 import React from "react";
-import { currentUser } from "@clerk/nextjs";
-import { redirect } from "next/navigation";
-import { getAuthUserDetails } from "@/lib/queries";
+import { getAuthUserDetails, verifyAndAcceptInvitation } from "@/lib/queries";
 
 const page = async () => {
-  const authUser = await currentUser();
-  if (!authUser) return redirect("/sign-in");
+  const agencyId = await verifyAndAcceptInvitation();
+
+  console.log(agencyId);
 
   const user = await getAuthUserDetails();
 
