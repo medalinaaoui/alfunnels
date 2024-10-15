@@ -7,7 +7,6 @@ const page = async () => {
   console.log(agencyId);
 
   const user = await getAuthUserDetails();
-
   if (!user) {
   }
 
