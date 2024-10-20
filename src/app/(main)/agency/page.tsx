@@ -3,6 +3,7 @@ import { currentUser } from "@clerk/nextjs";
 import { Plan } from "@prisma/client";
 import { redirect } from "next/navigation";
 import React from "react";
+import AgencyDetails from "@/components/forms/agency-details";
 
 const Agency = async ({
   searchParams,
@@ -40,10 +41,13 @@ const Agency = async ({
   const authUser = await currentUser();
 
   return (
-    <div>
-      <h1>Agency</h1>
-      <p>Agency ID: {agencyId}</p>
-      <div>authUser ID: {authUser?.emailAddresses[0].emailAddress}</div>
+    <div className="min-h-sreen w-full flex justify-center items-center">
+      <div className="py-12 flex flex-col px-5 container gap-6">
+        <h1 className="text-4xl uppercase font-semibold">Create your agency</h1>
+        <AgencyDetails
+          data={{ companyEmail: authUser?.emailAddresses[0].emailAddress }}
+        />
+      </div>
     </div>
   );
 };

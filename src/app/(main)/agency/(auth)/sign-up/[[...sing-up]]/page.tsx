@@ -1,8 +1,11 @@
 import { SignUp } from "@clerk/nextjs";
 import React from "react";
-
-const page = () => {
-  return <SignUp />;
+const Page = () => {
+  return (
+    <div className="min-h-screen w-full flex justify-center items-center">
+      <SignUp />
+    </div>
+  );
 };
 
-export default page;
+export default Page;
