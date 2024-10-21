@@ -25,8 +25,8 @@ import {
 import Link from "next/link";
 import { twMerge } from "tailwind-merge";
 import { useModal } from "@/providers/modal-provider";
-import CustomModal from "../global/custom-modal";
-import SubAccountDetails from "../forms/subaccount-details";
+import CustomModal from "@/components/global/custom-modal";
+import SubAccountDetails from "@/components/forms/subaccount-details";
 import { Separator } from "../ui/separator";
 import { icons } from "@/lib/constants";
 

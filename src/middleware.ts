@@ -11,7 +11,7 @@ export default authMiddleware({
     //rewrite for domains
     const url = req.nextUrl;
     const searchParams = url.searchParams.toString();
-    const hostname = req.headers;
+    let hostname = req.headers;
 
     const pathWithSearchParams = `${url.pathname}${
       searchParams.length > 0 ? `?${searchParams}` : ""

@@ -1,6 +1,6 @@
-import Hero from "@/app/alfunnels-components/Hero";
 import React from "react";
 import HeroBg from "@/components/site/hero-bg";
+import Hero from "@/components/site/Hero";
 
 const Home = () => {
   return (
