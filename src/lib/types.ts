@@ -43,7 +43,8 @@ export type UserWithPermissionsAndSubAccounts = Prisma.PromiseReturnType<
 
 export const FunnelPageSchema = z.object({
   name: z.string().min(1),
-  pathName: z.string().optional(),
+  pathName: z.string(),
+  funnelPageType: z.string(),
 });
 
 const __getUsersWithAgencySubAccountPermissionsSidebarOptions = async (

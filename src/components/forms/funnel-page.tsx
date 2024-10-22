@@ -23,7 +23,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import Loading from "@/components/global/loading";
 import { useToast } from "@/hooks/use-toast";
-import { FunnelPage } from "@prisma/client";
+import { FunnelPage, FunnelPageType } from "@prisma/client";
 import { FunnelPageSchema } from "@/lib/types";
 import {
   deleteFunnelePage,
@@ -34,6 +34,15 @@ import {
 import { useRouter } from "next/navigation";
 import { v4 } from "uuid";
 import { CopyPlusIcon, Trash } from "lucide-react";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "../ui/select";
 
 interface CreateFunnelPageProps {
   defaultData?: FunnelPage;
@@ -57,17 +66,24 @@ const CreateFunnelPage: React.FC<CreateFunnelPageProps> = ({
     defaultValues: {
       name: "",
       pathName: "",
+      funnelPageType: "OPTIN",
     },
   });
 
   useEffect(() => {
     if (defaultData) {
-      form.reset({ name: defaultData.name, pathName: defaultData.pathName });
+      form.reset({
+        name: defaultData.name,
+        pathName: defaultData.pathName,
+        funnelPageType: defaultData.funnelPageType,
+      });
     }
   }, [defaultData]);
 
   const onSubmit = async (values: z.infer<typeof FunnelPageSchema>) => {
-    if (order !== 0 && !values.pathName)
+    console.log(values);
+
+    if (!values.pathName)
       return form.setError("pathName", {
         message:
           "Pages other than the first page in the funnel require a path name example 'secondstep'.",
@@ -80,6 +96,7 @@ const CreateFunnelPage: React.FC<CreateFunnelPageProps> = ({
           id: defaultData?.id || v4(),
           order: defaultData?.order || order,
           pathName: values.pathName || "",
+          funnelPageType: values.funnelPageType as FunnelPageType,
         },
         funnelId
       );
@@ -135,10 +152,10 @@ const CreateFunnelPage: React.FC<CreateFunnelPageProps> = ({
               )}
             />
             <FormField
-              disabled={form.formState.isSubmitting || order === 0}
+              disabled={form.formState.isSubmitting}
               control={form.control}
               name="pathName"
-              render={({ field }) => (
+              render={({ field }) => {
                 <FormItem className="flex-1">
                   <FormLabel>Path Name</FormLabel>
                   <FormControl>
@@ -149,8 +166,59 @@ const CreateFunnelPage: React.FC<CreateFunnelPageProps> = ({
                     />
                   </FormControl>
                   <FormMessage />
-                </FormItem>
-              )}
+                </FormItem>;
+                return (
+                  <FormItem className="flex-1">
+                    <FormLabel>Path Name</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="Path for the page"
+                        {...field}
+                        value={field.value?.toLowerCase()}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                );
+              }}
+            />
+
+            <FormField
+              disabled={form.formState.isSubmitting}
+              control={form.control}
+              name="funnelPageType"
+              render={({ field }) => {
+                const value = field.value;
+
+                // console.log("value: ", value);
+                // console.log("field: ", field);
+
+                return (
+                  <FormItem className="flex-1">
+                    <FormLabel>Page Type</FormLabel>
+                    <FormControl>
+                      <Select onValueChange={field.onChange} value={value}>
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select a type" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="SALES_PAGE">Sales Page</SelectItem>
+                          <SelectItem value="OPTIN">Opt-in</SelectItem>
+                          <SelectItem value="THANK_YOU_PAGE">
+                            Thank You Page
+                          </SelectItem>
+                          <SelectItem value="CHECKOUT">
+                            Check Out Page
+                          </SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                );
+              }}
             />
             <div className="flex items-center gap-2">
               <Button

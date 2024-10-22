@@ -320,6 +320,13 @@ model ClassName {
   @@index([funnelId])
 }
 
+enum FunnelPageType {
+  OPTIN
+  SALES_PAGE
+  THANK_YOU_PAGE
+  CHECKOUT
+}
+
 model FunnelPage {
   id           String   @id @default(uuid())
   name         String
@@ -332,6 +339,8 @@ model FunnelPage {
   previewImage String?  @db.Text
   funnelId     String
   Funnel       Funnel   @relation(fields: [funnelId], references: [id], onDelete: Cascade)
+  funnelPageType   FunnelPageType @default(OPTIN)
+
 
   @@index([funnelId])
 }
