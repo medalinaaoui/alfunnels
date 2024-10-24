@@ -254,6 +254,7 @@ CREATE TABLE `FunnelPage` (
     `order` INTEGER NOT NULL,
     `previewImage` TEXT NULL,
     `funnelId` VARCHAR(191) NOT NULL,
+    `funnelPageType` ENUM('OPTIN', 'SALES_PAGE', 'THANK_YOU_PAGE', 'CHECKOUT') NOT NULL DEFAULT 'OPTIN',
 
     INDEX `FunnelPage_funnelId_idx`(`funnelId`),
     PRIMARY KEY (`id`)
@@ -321,7 +322,7 @@ CREATE TABLE `Subscription` (
     `id` VARCHAR(191) NOT NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
-    `plan` ENUM('price_1OYxkqFj9oKEERu1NbKUxXxN', 'price_1OYxkqFj9oKEERu1KfJGWxgN') NULL,
+    `plan` ENUM('price_1QBgvbER6kEqAWWX7eD7NjtF', 'price_1QBgvbER6kEqAWWXgfO2XdwJ') NULL,
     `price` VARCHAR(191) NULL,
     `active` BOOLEAN NOT NULL DEFAULT false,
     `priceId` VARCHAR(191) NOT NULL,

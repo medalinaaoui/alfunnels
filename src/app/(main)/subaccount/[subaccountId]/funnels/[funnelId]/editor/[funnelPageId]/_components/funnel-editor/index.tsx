@@ -1,87 +1,114 @@
-'use client'
-import { Button } from '@/components/ui/button'
-import { getFunnelPageDetails } from '@/lib/queries'
-import { useEditor } from '@/providers/editor/editor-provider'
-import clsx from 'clsx'
-import { EyeOff } from 'lucide-react'
-import React, { useEffect } from 'react'
-import Recursive from './funnel-editor-components/recursive'
+"use client";
+import { Button } from "@/components/ui/button";
+import { getFunnelPageDetails } from "@/lib/queries";
+import { useEditor } from "@/providers/editor/editor-provider";
+import clsx from "clsx";
+import { EyeOff } from "lucide-react";
+import React, { useEffect } from "react";
+import Recursive from "./funnel-editor-components/recursive";
+import { extractMediaQueries } from "@/lib/utils";
 
-type Props = { funnelPageId: string; liveMode?: boolean }
+type Props = { funnelPageId: string; liveMode?: boolean };
 
 const FunnelEditor = ({ funnelPageId, liveMode }: Props) => {
-  const { dispatch, state } = useEditor()
+  const { dispatch, state } = useEditor();
 
   useEffect(() => {
     if (liveMode) {
       dispatch({
-        type: 'TOGGLE_LIVE_MODE',
+        type: "TOGGLE_LIVE_MODE",
         payload: { value: true },
-      })
+      });
     }
-  }, [liveMode])
+  }, [liveMode]);
 
   //CHALLENGE: make this more performant
   useEffect(() => {
     const fetchData = async () => {
-      const response = await getFunnelPageDetails(funnelPageId)
-      if (!response) return
+      const response = await getFunnelPageDetails(funnelPageId);
+      if (!response) return;
 
       dispatch({
-        type: 'LOAD_DATA',
+        type: "LOAD_DATA",
         payload: {
-          elements: response.content ? JSON.parse(response?.content) : '',
+          elements: response.content ? JSON.parse(response?.content) : "",
           withLive: !!liveMode,
         },
-      })
-    }
-    fetchData()
-  }, [funnelPageId])
+      });
+    };
+    fetchData();
+  }, [funnelPageId]);
 
   const handleClick = () => {
     dispatch({
-      type: 'CHANGE_CLICKED_ELEMENT',
+      type: "CHANGE_CLICKED_ELEMENT",
       payload: {},
-    })
-  }
+    });
+  };
 
   const handleUnpreview = () => {
-    dispatch({ type: 'TOGGLE_PREVIEW_MODE' })
-    dispatch({ type: 'TOGGLE_LIVE_MODE' })
-  }
+    dispatch({ type: "TOGGLE_PREVIEW_MODE" });
+    dispatch({ type: "TOGGLE_LIVE_MODE" });
+  };
   return (
     <div
       className={clsx(
-        'use-automation-zoom-in h-full overflow-scroll mr-[385px] bg-background transition-all rounded-md',
+        "use-automation-zoom-in h-full overflow-scroll mr-[385px] bg-background transition-all rounded-md",
         {
-          '!p-0 !mr-0':
+          "!p-0 !mr-0":
             state.editor.previewMode === true || state.editor.liveMode === true,
-          '!w-[850px]': state.editor.device === 'Tablet',
-          '!w-[420px]': state.editor.device === 'Mobile',
-          'w-full': state.editor.device === 'Desktop',
+          "!w-[850px]": state.editor.device === "Tablet",
+          "!w-[420px]": state.editor.device === "Mobile",
+          "w-full": state.editor.device === "Desktop",
         }
       )}
       onClick={handleClick}
     >
       {state.editor.previewMode && state.editor.liveMode && (
         <Button
-          variant={'ghost'}
-          size={'icon'}
+          variant={"ghost"}
+          size={"icon"}
           className="w-6 h-6 bg-slate-600 p-[2px] fixed top-0 left-0 z-[100]"
           onClick={handleUnpreview}
         >
           <EyeOff />
         </Button>
       )}
+
+      {liveMode && (
+        <style>
+          {state.editor.elements
+            .filter((e) => e.type == "__body")
+            .map((e) => {
+              const result = extractMediaQueries(e);
+
+              return `
+            @media (max-width: 850px) {
+            ${result
+              .map(
+                (ele) => `
+                #${ele.id} {
+                   ${Object.entries(
+                     ele.mediaQueries["@media (max-width: 850px)"]
+                   )
+                     .map(([prop, value]) => `${prop}: ${value};`)
+                     .join(" ")}
+                }
+              `
+              )
+              .join(" ")}
+            }
+            `;
+            })}
+        </style>
+      )}
+
       {Array.isArray(state.editor.elements) &&
         state.editor.elements.map((childElement) => (
-          <Recursive
-            key={childElement.id}
-            element={childElement}
-          />
+          <Recursive key={childElement.id} element={childElement} />
         ))}
     </div>
-  )
-}
+  );
+};
 
-export default FunnelEditor
+export default FunnelEditor;

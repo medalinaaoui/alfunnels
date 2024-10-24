@@ -1,2 +1,0 @@
--- AlterTable
-ALTER TABLE `funnelpage` ADD COLUMN `funnelPageType` ENUM('OPTIN', 'SALES_PAGE', 'THANK_YOU_PAGE', 'CHECKOUT') NOT NULL DEFAULT 'OPTIN';

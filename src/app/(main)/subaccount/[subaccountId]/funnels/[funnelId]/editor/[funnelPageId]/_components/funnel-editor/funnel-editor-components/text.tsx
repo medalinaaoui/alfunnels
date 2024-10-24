@@ -1,47 +1,48 @@
-'use client'
-import { Badge } from '@/components/ui/badge'
-import { EditorElement, useEditor } from '@/providers/editor/editor-provider'
-import clsx from 'clsx'
-import { Trash } from 'lucide-react'
-import React from 'react'
+"use client";
+import { Badge } from "@/components/ui/badge";
+import { EditorElement, useEditor } from "@/providers/editor/editor-provider";
+import clsx from "clsx";
+import { Trash } from "lucide-react";
+import React from "react";
 
 type Props = {
-  element: EditorElement
-}
+  element: EditorElement;
+};
 
 const TextComponent = (props: Props) => {
-  const { dispatch, state } = useEditor()
+  const { dispatch, state } = useEditor();
 
   const handleDeleteElement = () => {
     dispatch({
-      type: 'DELETE_ELEMENT',
+      type: "DELETE_ELEMENT",
       payload: { elementDetails: props.element },
-    })
-  }
-  const styles = props.element.styles
+    });
+  };
+  const styles = props.element.styles;
 
   const handleOnClickBody = (e: React.MouseEvent) => {
-    e.stopPropagation()
+    e.stopPropagation();
     dispatch({
-      type: 'CHANGE_CLICKED_ELEMENT',
+      type: "CHANGE_CLICKED_ELEMENT",
       payload: {
         elementDetails: props.element,
       },
-    })
-  }
+    });
+  };
 
   //WE ARE NOT ADDING DRAG DROP
   return (
     <div
+      id={props.element.id}
       style={styles}
       className={clsx(
-        'p-[2px] w-full m-[5px] relative text-[16px] transition-all',
+        "p-[2px] w-full m-[5px] relative text-[16px] transition-all",
         {
-          '!border-blue-500':
+          "!border-blue-500":
             state.editor.selectedElement.id === props.element.id,
 
-          '!border-solid': state.editor.selectedElement.id === props.element.id,
-          'border-dashed border-[1px] border-slate-300': !state.editor.liveMode,
+          "!border-solid": state.editor.selectedElement.id === props.element.id,
+          "border-dashed border-[1px] border-slate-300": !state.editor.liveMode,
         }
       )}
       onClick={handleOnClickBody}
@@ -52,12 +53,12 @@ const TextComponent = (props: Props) => {
             {state.editor.selectedElement.name}
           </Badge>
         )}
-      <span
+      <p
         contentEditable={!state.editor.liveMode}
         onBlur={(e) => {
-          const spanElement = e.target as HTMLSpanElement
+          const spanElement = e.target as HTMLSpanElement;
           dispatch({
-            type: 'UPDATE_ELEMENT',
+            type: "UPDATE_ELEMENT",
             payload: {
               elementDetails: {
                 ...props.element,
@@ -66,12 +67,12 @@ const TextComponent = (props: Props) => {
                 },
               },
             },
-          })
+          });
         }}
       >
         {!Array.isArray(props.element.content) &&
           props.element.content.innerText}
-      </span>
+      </p>
       {state.editor.selectedElement.id === props.element.id &&
         !state.editor.liveMode && (
           <div className="absolute bg-primary px-2.5 py-1 text-xs font-bold -top-[25px] -right-[1px] rounded-none rounded-t-lg !text-white">
@@ -83,7 +84,7 @@ const TextComponent = (props: Props) => {
           </div>
         )}
     </div>
-  )
-}
+  );
+};
 
-export default TextComponent
+export default TextComponent;

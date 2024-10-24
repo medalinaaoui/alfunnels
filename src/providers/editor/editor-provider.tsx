@@ -14,6 +14,7 @@ export type EditorElement = {
   content:
     | EditorElement[]
     | { href?: string; innerText?: string; src?: string };
+  mediaQueries?: { [query: string]: { [key: string]: string } }; // Optional mediaQueries property
 };
 
 export type Editor = {
